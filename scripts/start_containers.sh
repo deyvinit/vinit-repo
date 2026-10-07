@@ -9,6 +9,9 @@ if [ ! -f .env ]; then
     cp .env.example .env
 fi
 
+# Ensure docker socket permissions
+sudo chmod 666 /var/run/docker.sock 2>/dev/null || true
+
 # Stop/remove any existing containers by name just in case
 docker stop todo-frontend todo-middleware todo-rust-api todo-auth todo-db 2>/dev/null || true
 docker rm todo-frontend todo-middleware todo-rust-api todo-auth todo-db 2>/dev/null || true
