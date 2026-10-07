@@ -27,16 +27,56 @@ body {
 header {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     border-bottom: 1px solid #334155;
     padding-bottom: 20px;
     margin-bottom: 24px;
 }
 
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
 h1 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: #38bdf8;
+}
+
+.auth-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+}
+
+#user-display {
+    color: #94a3b8;
+}
+
+.auth-btn {
+    padding: 6px 14px;
+    background: #475569;
+    color: #ffffff;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.auth-btn:hover {
+    background: #64748b;
+}
+
+.auth-btn.logout {
+    background: #dc2626;
+}
+
+.auth-btn.logout:hover {
+    background: #b91c1c;
 }
 
 .badge {
@@ -58,6 +98,56 @@ h1 {
     background: #dc2626;
 }
 
+/* Keycloak Login Gate */
+.login-gate {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.gate-card {
+    background: #0f172a;
+    border: 1px solid #38bdf8;
+    border-radius: 10px;
+    padding: 32px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.gate-card h2 {
+    font-size: 1.25rem;
+    color: #38bdf8;
+}
+
+.gate-card p {
+    color: #94a3b8;
+    font-size: 0.95rem;
+}
+
+.gate-btn {
+    padding: 12px 24px;
+    background: #0284c7;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.gate-btn:hover {
+    background: #0369a1;
+}
+
+.hint {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.hint b {
+    color: #f1f5f9;
+}
+
+/* Todo Form & List */
 .add-section form {
     display: flex;
     flex-direction: column;
@@ -191,9 +281,6 @@ ul#todo-list {
     transition: opacity 0.3s, transform 0.3s;
 }
 
-.toast.hidden {
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(10px);
+.toast.hidden, .hidden {
+    display: none !important;
 }
-

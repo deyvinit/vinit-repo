@@ -1,5 +1,7 @@
 const API_BASE = '/api';
+const KEYCLOAK_BASE = `http://${window.location.hostname}:8082/realms/todo-realm/protocol/openid-connect`;
 
+// DOM elements
 const todoList = document.getElementById('todo-list');
 const todoForm = document.getElementById('todo-form');
 const titleInput = document.getElementById('todo-title');
@@ -7,8 +9,96 @@ const descInput = document.getElementById('todo-desc');
 const rustBadge = document.getElementById('rust-badge');
 const loadingText = document.getElementById('loading');
 const toast = document.getElementById('toast');
+const userDisplay = document.getElementById('user-display');
+const authBtn = document.getElementById('auth-btn');
+const loginGate = document.getElementById('login-gate');
+const appContent = document.getElementById('app-content');
+const gateLoginBtn = document.getElementById('gate-login-btn');
 
-// Show notification toast
+// --- Keycloak OAuth2 / OIDC Flow ---
+
+function redirectToKeycloakLogin() {
+    const redirectUri = encodeURIComponent(window.location.origin + '/');
+    const authUrl = `${KEYCLOAK_BASE}/auth?client_id=todo-client&redirect_uri=${redirectUri}&response_type=token id_token&scope=openid profile email&nonce=${Date.now()}`;
+    window.location.href = authUrl;
+}
+
+function redirectToKeycloakLogout() {
+    sessionStorage.removeItem('kc_token');
+    sessionStorage.removeItem('kc_user');
+    const redirectUri = encodeURIComponent(window.location.origin + '/');
+    const logoutUrl = `${KEYCLOAK_BASE}/logout?post_logout_redirect_uri=${redirectUri}&client_id=todo-client`;
+    window.location.href = logoutUrl;
+}
+
+// Extract JWT tokens from URL hash after Keycloak login redirect
+function processUrlHashTokens() {
+    const hash = window.location.hash.substring(1);
+    if (!hash) return;
+
+    const params = new URLSearchParams(hash);
+    const accessToken = params.get('access_token');
+    const idToken = params.get('id_token');
+
+    if (accessToken) {
+        sessionStorage.setItem('kc_token', accessToken);
+        
+        let username = 'testuser';
+        if (idToken) {
+            try {
+                const payloadBase64 = idToken.split('.')[1];
+                const decoded = JSON.parse(atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/')));
+                username = decoded.preferred_username || decoded.name || decoded.email || 'testuser';
+            } catch (e) {
+                console.warn('Could not parse id_token payload', e);
+            }
+        }
+        sessionStorage.setItem('kc_user', username);
+
+        // Remove tokens from URL bar for clean UI
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+}
+
+// Update UI based on authentication state
+function syncAuthState() {
+    processUrlHashTokens();
+
+    const token = sessionStorage.getItem('kc_token');
+    const username = sessionStorage.getItem('kc_user');
+
+    if (token) {
+        // Authenticated State
+        userDisplay.textContent = `👤 Logged in as: ${username}`;
+        authBtn.textContent = 'Sign Out';
+        authBtn.className = 'auth-btn logout';
+        authBtn.onclick = redirectToKeycloakLogout;
+
+        loginGate.classList.add('hidden');
+        appContent.classList.remove('hidden');
+
+        checkRustWorker();
+        loadTodos();
+    } else {
+        // Unauthenticated State
+        userDisplay.textContent = 'Not Logged In';
+        authBtn.textContent = 'Sign In';
+        authBtn.className = 'auth-btn';
+        authBtn.onclick = redirectToKeycloakLogin;
+
+        loginGate.classList.remove('hidden');
+        appContent.classList.add('hidden');
+        
+        checkRustWorker();
+    }
+}
+
+if (gateLoginBtn) {
+    gateLoginBtn.onclick = redirectToKeycloakLogin;
+}
+
+// --- Todo & Worker Logic ---
+
 function showToast(msg) {
     toast.textContent = msg;
     toast.classList.remove('hidden');
@@ -17,7 +107,6 @@ function showToast(msg) {
     }, 3500);
 }
 
-// Fetch Rust Worker Status
 async function checkRustWorker() {
     try {
         const res = await fetch(`${API_BASE}/rust/status`);
@@ -31,7 +120,6 @@ async function checkRustWorker() {
     }
 }
 
-// Fetch and render Todos
 async function loadTodos() {
     try {
         const res = await fetch(`${API_BASE}/todos`);
@@ -67,7 +155,6 @@ async function loadTodos() {
     }
 }
 
-// Add new todo
 todoForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const title = titleInput.value.trim();
@@ -91,7 +178,6 @@ todoForm.addEventListener('submit', async (e) => {
     }
 });
 
-// Event delegation for toggle and delete
 todoList.addEventListener('click', async (e) => {
     const target = e.target;
     
@@ -144,8 +230,6 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Initial load
-checkRustWorker();
-loadTodos();
+// Initialize Auth and Event Handlers
+syncAuthState();
 setInterval(checkRustWorker, 10000);
-

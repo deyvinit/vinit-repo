@@ -9,25 +9,44 @@
 <body>
     <div class="container">
         <header>
-            <h1>Todo Assessment App</h1>
+            <div class="header-top">
+                <h1>Todo Assessment App</h1>
+                <div id="auth-box" class="auth-box">
+                    <span id="user-display">Checking session...</span>
+                    <button id="auth-btn" class="auth-btn">Sign In</button>
+                </div>
+            </div>
             <div id="rust-badge" class="badge">
                 Checking Rust worker...
             </div>
         </header>
 
-        <section class="add-section">
-            <form id="todo-form">
-                <input type="text" id="todo-title" placeholder="Enter new todo title..." required autocomplete="off">
-                <input type="text" id="todo-desc" placeholder="Optional description..." autocomplete="off">
-                <button type="submit" id="add-btn">Add Todo</button>
-            </form>
+        <!-- Keycloak Login Gate -->
+        <section id="login-gate" class="login-gate hidden">
+            <div class="gate-card">
+                <h2>🔒 Keycloak Authentication Required</h2>
+                <p>Please log in via Keycloak to access and manage todos.</p>
+                <button id="gate-login-btn" class="gate-btn">Sign in with Keycloak</button>
+                <div class="hint">Demo credentials: <b>testuser</b> / <b>password123</b></div>
+            </div>
         </section>
 
-        <section class="list-section">
-            <h2>Current Tasks</h2>
-            <div id="loading" class="info-text">Loading tasks...</div>
-            <ul id="todo-list"></ul>
-        </section>
+        <!-- App Content (Visible when authenticated) -->
+        <div id="app-content">
+            <section class="add-section">
+                <form id="todo-form">
+                    <input type="text" id="todo-title" placeholder="Enter new todo title..." required autocomplete="off">
+                    <input type="text" id="todo-desc" placeholder="Optional description..." autocomplete="off">
+                    <button type="submit" id="add-btn">Add Todo</button>
+                </form>
+            </section>
+
+            <section class="list-section">
+                <h2>Current Tasks</h2>
+                <div id="loading" class="info-text">Loading tasks...</div>
+                <ul id="todo-list"></ul>
+            </section>
+        </div>
 
         <div id="toast" class="toast hidden"></div>
     </div>
@@ -35,4 +54,3 @@
     <script src="app.js"></script>
 </body>
 </html>
-
