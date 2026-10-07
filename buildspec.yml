@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - echo "Installing test dependencies..."
+      - pip install -r middleware/requirements.txt
+  pre_build:
+    commands:
+      - echo "Running unit tests for FastAPI middleware..."
+      - PYTHONPATH=middleware pytest middleware/tests/
+      - echo "Validating Docker Compose configuration..."
+      - docker compose config
+  build:
+    commands:
+      - echo "Building Docker container images..."
+      - docker compose build
+  post_build:
+    commands:
+      - echo "CI verification and container build completed on $(date)"
+
+artifacts:
+  files:
+    - '**/*'

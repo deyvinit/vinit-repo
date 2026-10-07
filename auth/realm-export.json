@@ -1,0 +1,49 @@
+{
+  "realm": "todo-realm",
+  "enabled": true,
+  "displayName": "Todo Assessment Realm",
+  "sslRequired": "none",
+  "registrationAllowed": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "clients": [
+    {
+      "clientId": "todo-client",
+      "name": "Todo Assessment App Client",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "protocol": "openid-connect",
+      "rootUrl": "",
+      "baseUrl": "/",
+      "redirectUris": [
+        "*"
+      ],
+      "webOrigins": [
+        "*"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "testuser",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Assessment",
+      "lastName": "User",
+      "email": "testuser@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password123",
+          "temporary": false
+        }
+      ]
+    }
+  ]
+}

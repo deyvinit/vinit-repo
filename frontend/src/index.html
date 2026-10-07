@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment Todo App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Todo Assessment App</h1>
+            <div id="rust-badge" class="badge">
+                Checking Rust worker...
+            </div>
+        </header>
+
+        <section class="add-section">
+            <form id="todo-form">
+                <input type="text" id="todo-title" placeholder="Enter new todo title..." required autocomplete="off">
+                <input type="text" id="todo-desc" placeholder="Optional description..." autocomplete="off">
+                <button type="submit" id="add-btn">Add Todo</button>
+            </form>
+        </section>
+
+        <section class="list-section">
+            <h2>Current Tasks</h2>
+            <div id="loading" class="info-text">Loading tasks...</div>
+            <ul id="todo-list"></ul>
+        </section>
+
+        <div id="toast" class="toast hidden"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

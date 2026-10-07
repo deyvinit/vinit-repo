@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+env/
+venv/
+.venv/
+
+# Rust
+target/
+**/*.rs.bk
+Cargo.lock
+
+# Environment & OS
+.env
+.DS_Store
+*.log
+
+# Docker data
+postgres_data/
