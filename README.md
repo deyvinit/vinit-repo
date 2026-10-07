@@ -96,3 +96,4 @@ docker compose up -d --build
 2. **Source:** Select **AWS CodeCommit** -> Repository: `ngtc-assessment` -> Branch: `main`.
 3. **Build:** Select **AWS CodeBuild** -> Create project using `buildspec.yml` from repository.
 4. **Deploy:** Select **AWS CodeDeploy** -> Deploy to EC2 instance tag using `appspec.yml`.
+

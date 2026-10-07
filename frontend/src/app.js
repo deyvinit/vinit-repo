@@ -148,3 +148,4 @@ function escapeHtml(text) {
 checkRustWorker();
 loadTodos();
 setInterval(checkRustWorker, 10000);
+

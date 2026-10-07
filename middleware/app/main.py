@@ -97,3 +97,4 @@ async def delete_todo_via_rust(todo_id: int):
             status_code=502,
             detail=f"Failed to communicate with Rust deletion service: {str(exc)}"
         )
+

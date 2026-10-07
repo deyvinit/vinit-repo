@@ -13,3 +13,4 @@ INSERT INTO todos (title, description, completed) VALUES
     ('Launch AWS EC2 instance', 'Deploy 5 containers with docker-compose', true),
     ('Configure Keycloak Auth', 'Preload realm and test user', false),
     ('Test Rust DELETE microservice', 'Verify polyglot DELETE proxy requirement', false);
+

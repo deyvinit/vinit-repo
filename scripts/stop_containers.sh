@@ -6,3 +6,4 @@ cd /home/ubuntu/ngtc-assessment || exit 0
 if command -v docker &> /dev/null; then
     docker compose down || true
 fi
+

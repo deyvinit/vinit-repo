@@ -52,3 +52,4 @@ def test_create_and_read_todo():
     put_resp = client.put(f"/api/todos/{todo_id}", json={"completed": True})
     assert put_resp.status_code == 200
     assert put_resp.json()["completed"] is True
+

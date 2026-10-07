@@ -14,3 +14,4 @@ docker compose up -d --build
 
 echo "Containers started successfully:"
 docker compose ps
+

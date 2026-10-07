@@ -34,3 +34,4 @@ COPY --from=builder /usr/src/app/target/release/rust-api /app/rust-api
 EXPOSE 8080
 
 CMD ["/app/rust-api"]
+

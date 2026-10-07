@@ -21,3 +21,4 @@ class TodoOut(TodoBase):
 
     class Config:
         from_attributes = True
+
