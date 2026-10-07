@@ -10,7 +10,7 @@ phases:
   pre_build:
     commands:
       - echo "Running unit tests for FastAPI middleware..."
-      - PYTHONPATH=middleware pytest middleware/tests/
+      - DATABASE_URL="sqlite:///:memory:" PYTHONPATH=middleware pytest middleware/tests/
       - echo "Validating Docker Compose configuration..."
       - docker compose config
   build:

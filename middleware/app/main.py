@@ -9,7 +9,10 @@ from .database import get_db, engine, Base
 from . import models, schemas
 
 # Create tables if not exists on startup
-Base.metadata.create_all(bind=engine)
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print(f"Warning: Database connection skipped on import: {e}")
 
 app = FastAPI(title="Todo Middleware API", version="1.0.0")
 
