@@ -11,7 +11,8 @@ A complete multi-container system featuring **FastAPI**, **Rust (Axum)**, **Post
 | **Core Todo App** | **50%** | **Frontend (Nginx)** + **Middleware (FastAPI)** + **Database (PostgreSQL 16)** |
 | **Authentication** | **20%** | **Keycloak 24 (Upstream 10%)** with auto-imported realm & client (**Downstream 10%**) |
 | **Rust Worker Service** | **10% + Bonus** | **Rust Axum**: returns `"hello world from Rust"` (`GET /`) and handles **`DELETE /todos/{id}`** |
-| **CI/CD Pipeline** | **20%** | **AWS CodeCommit** + **AWS CodeBuild (`buildspec.yml`)** + **AWS CodePipeline** |
+| **CI/CD Pipeline** | **20%** | **GitHub App** + **AWS CodeBuild (`buildspec.yml`)** + **AWS CodeDeploy** + **AWS CodePipeline** |
+| **Edge Security & Routing** | **Bonus** | **AWS WAF (Web ACL)** + **Application Load Balancer (ALB)** (OWASP Top 10, XSS, SQLi protection) |
 
 ---
 
@@ -92,8 +93,34 @@ docker compose up -d --build
 ```
 
 ### Step 3: AWS CodePipeline Setup (20% Rubric)
-1. Go to **AWS CodePipeline** -> Create pipeline.
-2. **Source:** Select **AWS CodeCommit** -> Repository: `ngtc-assessment` -> Branch: `main`.
-3. **Build:** Select **AWS CodeBuild** -> Create project using `buildspec.yml` from repository.
-4. **Deploy:** Select **AWS CodeDeploy** -> Deploy to EC2 instance tag using `appspec.yml`.
+1. **Source:** GitHub App connecting to repo branch `main`.
+2. **Build:** AWS CodeBuild project using `buildspec.yml` (runs `pytest` tests with SQLite in-memory static pool & builds docker images).
+3. **Deploy:** AWS CodeDeploy application `vinit-todo-app` deploying to EC2 instance using `appspec.yml`.
+
+---
+
+## AWS WAF & Application Load Balancer (Security & Ingress)
+
+The application is fronted by an **Internet-facing Application Load Balancer** (`vinit-todo-alb`) protected by **AWS WAF** (`vinit-todo-waf`):
+
+- **Port 80 (HTTP):** Routes to Target Group `vinit-todo-tg` (Nginx Frontend on port 80).
+- **Port 8082 (HTTP):** Routes to Target Group `vinit-keycloak-tg` (Keycloak IdP on port 8082).
+- **AWS Managed Rule Groups Active:**
+  - `AWSManagedRulesCommonRuleSet` (Core rule set / OWASP Top 10)
+  - `AWSManagedRulesKnownBadInputsRuleSet`
+  - `AWSManagedRulesSQLiRuleSet`
+  - `AWSManagedRulesLinuxRuleSet`
+
+### Testing WAF Protection
+```bash
+# Benign traffic (200 OK):
+curl -I http://vinit-todo-alb-1632367111.us-east-1.elb.amazonaws.com/
+
+# Malicious XSS probe (Blocked with 403 Forbidden by WAF):
+curl -i "http://vinit-todo-alb-1632367111.us-east-1.elb.amazonaws.com/?param=<script>alert('xss')</script>"
+
+# Path Traversal attack (Blocked with 403 Forbidden by WAF):
+curl -i "http://vinit-todo-alb-1632367111.us-east-1.elb.amazonaws.com/../../../../etc/passwd"
+```
+
 
